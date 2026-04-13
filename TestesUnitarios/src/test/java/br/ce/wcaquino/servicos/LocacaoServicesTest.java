@@ -13,6 +13,8 @@ import static org.junit.Assert.assertThat;
 import static br.ce.wcaquino.utils.DataUtils.*;
 
 import br.ce.wcaquino.entidades.*;
+import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
+import br.ce.wcaquino.exceptions.LocadoraException;
 
 public class LocacaoServicesTest {
 
@@ -50,31 +52,31 @@ public class LocacaoServicesTest {
 	}
 
 	@Test
-	public void testFilmeSemEstoque_2() throws Exception{
-		//cenario de teste
+	public void testeUsuarioVazio() throws FilmeSemEstoqueException{
+		//cenario
 		LocacaoService service = new LocacaoService();
-		Usuario usuario = new Usuario("Ususario 1");
-		Filme filme = new Filme("Filme 1", 0, 4.0);
+		Filme filme = new Filme("Filme 1", 2, 4.0);
 
 		//acao
 		try{
-			service.alugarFilme(usuario, filme);
-			Assert.fail("Deveria ter lançado uma exception");
+			service.alugarFilme(null, filme);
+			Assert.fail();
 		}
-		catch(Exception e){
-			assertThat(e.getMessage(), is("Filme sem estoque"));
+		catch(LocadoraException e){
+			assertThat(e.getMessage(), is("usuario não cadastrado"));
 		}
 	}
+
 	@Test
-	public void testFilmeSemEstoque_3() throws Exception{
-		//cenario de teste
+	public void testeFilmeVazio() throws FilmeSemEstoqueException, LocadoraException{
+		//cenario
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Ususario 1");
-		Filme filme = new Filme("Filme 1", 0, 4.0);
-		exception.expect(Exception.class);
-		exception.expectMessage("Filme sem estoque");
+
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("filme nao cadastrado");
 
 		//acao
-		service.alugarFilme(usuario, filme);
+		service.alugarFilme(usuario, null);
 	}
 }
