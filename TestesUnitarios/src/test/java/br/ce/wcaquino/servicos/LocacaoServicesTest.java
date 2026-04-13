@@ -1,12 +1,17 @@
 package br.ce.wcaquino.servicos;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.junit.runners.MethodSorters;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -16,7 +21,10 @@ import br.ce.wcaquino.entidades.*;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LocacaoServicesTest {
+
+	private LocacaoService service;
 
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
@@ -24,12 +32,16 @@ public class LocacaoServicesTest {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 
+	@Before
+	public void setup() {
+		service = new LocacaoService();
+	}
+
   @Test
 	public void testeLocacao() throws Exception {
 		//cenario de teste
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Ususario 1");
-		Filme filme = new Filme("Filme 1", 8, 4.0);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 8, 4.0));
 
 		//acao
 		Locacao locacao = service.alugarFilme(usuario, filme);
@@ -43,9 +55,8 @@ public class LocacaoServicesTest {
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void testFilmeSemEstoque() throws Exception{
 		//cenario de teste
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Ususario 1");
-		Filme filme = new Filme("Filme 1", 0, 4.0);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 0, 4.0));
 
 		//acao
 		service.alugarFilme(usuario, filme);
@@ -54,8 +65,7 @@ public class LocacaoServicesTest {
 	@Test
 	public void testeUsuarioVazio() throws FilmeSemEstoqueException{
 		//cenario
-		LocacaoService service = new LocacaoService();
-		Filme filme = new Filme("Filme 1", 2, 4.0);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 8, 4.0));
 
 		//acao
 		try{
@@ -70,7 +80,6 @@ public class LocacaoServicesTest {
 	@Test
 	public void testeFilmeVazio() throws FilmeSemEstoqueException, LocadoraException{
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Ususario 1");
 
 		exception.expect(LocadoraException.class);
