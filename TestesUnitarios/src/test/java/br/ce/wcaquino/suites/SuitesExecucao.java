@@ -1,4 +1,4 @@
-package br.ce.suites;
+package br.ce.wcaquino.suites;
 
 import br.ce.wcaquino.servicos.*;
 

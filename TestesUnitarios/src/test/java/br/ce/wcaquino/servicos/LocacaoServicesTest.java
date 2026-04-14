@@ -19,7 +19,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+
 import static br.ce.wcaquino.utils.DataUtils.*;
+import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
 
 import br.ce.wcaquino.entidades.*;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
@@ -48,8 +51,8 @@ public class LocacaoServicesTest {
 		assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		//cenario de teste
-		Usuario usuario = new Usuario("Ususario 1");
-		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 8, 4.0));
+		Usuario usuario = umUsuario().agora();
+		List<Filme> filme = Arrays.asList(umFilme().agora());
 
 		//acao
 		Locacao locacao = service.alugarFilme(usuario, filme);
@@ -63,8 +66,8 @@ public class LocacaoServicesTest {
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void naoDeveAlugarFilmeSemEstoque() throws Exception{
 		//cenario de teste
-		Usuario usuario = new Usuario("Ususario 1");
-		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 0, 4.0));
+		Usuario usuario = umUsuario().agora();
+		List<Filme> filme = Arrays.asList(umFilme().agora());
 
 		//acao
 		service.alugarFilme(usuario, filme);
@@ -73,7 +76,7 @@ public class LocacaoServicesTest {
 	@Test
 	public void naoDeveAlugarFilmeSemUsuario() throws FilmeSemEstoqueException{
 		//cenario
-		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 8, 4.0));
+		List<Filme> filme = Arrays.asList(umFilme().agora());
 
 		//acao
 		try{
@@ -87,7 +90,7 @@ public class LocacaoServicesTest {
 	@Test
 	public void naoDeveAlugarFilmeVazio() throws FilmeSemEstoqueException, LocadoraException{
 		//cenario
-		Usuario usuario = new Usuario("Ususario 1");
+		Usuario usuario = umUsuario().agora();
 
 		exception.expect(LocadoraException.class);
 		exception.expectMessage("filme nao cadastrado");
@@ -102,8 +105,8 @@ public class LocacaoServicesTest {
 		assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		//cenario
-		Usuario usuario = new Usuario("usuario");
-		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 8, 4.0));
+		Usuario usuario = umUsuario().agora();
+		List<Filme> filme = Arrays.asList(umFilme().agora());
 
 		//acao
 		Locacao retorno = service.alugarFilme(usuario, filme);
