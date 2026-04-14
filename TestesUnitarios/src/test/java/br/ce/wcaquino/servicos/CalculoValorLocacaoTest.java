@@ -1,4 +1,4 @@
-package br.ce.wcaquino;
+package br.ce.wcaquino.servicos;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -19,7 +19,6 @@ import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
-import br.ce.wcaquino.servicos.LocacaoService;
 
 @RunWith(Parameterized.class)
 public class CalculoValorLocacaoTest {
