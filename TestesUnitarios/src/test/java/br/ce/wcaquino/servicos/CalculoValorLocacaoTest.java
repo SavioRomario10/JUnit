@@ -1,6 +1,7 @@
 package br.ce.wcaquino.servicos;
 
 import static org.junit.Assert.assertThat;
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
 import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Arrays;
@@ -32,13 +33,13 @@ public class CalculoValorLocacaoTest {
   @Parameter(value = 2)
   public String cenario;
 
-  private static Filme filme1 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme2 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme3 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme4 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme5 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme6 = new Filme("Filme1", 2, 4.0);
-  private static Filme filme7 = new Filme("Filme1", 2, 4.0);
+  private static Filme filme1 = umFilme().agora();
+  private static Filme filme2 = umFilme().agora();
+  private static Filme filme3 = umFilme().agora();
+  private static Filme filme4 = umFilme().agora();
+  private static Filme filme5 = umFilme().agora();
+  private static Filme filme6 = umFilme().agora();
+  private static Filme filme7 = umFilme().agora();
 
   @Before
   public void setup(){

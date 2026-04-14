@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeTrue;
 import static br.ce.wcaquino.utils.DataUtils.*;
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilmeSemEstoque;
 
 import br.ce.wcaquino.entidades.*;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
@@ -52,13 +53,13 @@ public class LocacaoServicesTest {
 
 		//cenario de teste
 		Usuario usuario = umUsuario().agora();
-		List<Filme> filme = Arrays.asList(umFilme().agora());
+		List<Filme> filme = Arrays.asList(umFilme().comValor(5.0).agora());
 
 		//acao
 		Locacao locacao = service.alugarFilme(usuario, filme);
 
 		//verificacao
-		error.checkThat(locacao.getValor(), is(equalTo(4.0)));
+		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
 		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
 		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias( 1)), is(true));
 	}
@@ -67,7 +68,7 @@ public class LocacaoServicesTest {
 	public void naoDeveAlugarFilmeSemEstoque() throws Exception{
 		//cenario de teste
 		Usuario usuario = umUsuario().agora();
-		List<Filme> filme = Arrays.asList(umFilme().agora());
+		List<Filme> filme = Arrays.asList(umFilmeSemEstoque().agora());
 
 		//acao
 		service.alugarFilme(usuario, filme);
