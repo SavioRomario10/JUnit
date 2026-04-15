@@ -13,7 +13,9 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +27,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static br.ce.wcaquino.builders.LocacaoBuilder.umaLocacao;
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
@@ -44,9 +45,14 @@ import br.ce.wcaquino.utils.DataUtils;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LocacaoServicesTest {
 
+	@InjectMocks
 	private LocacaoService service;
+
+	@Mock
 	private LocacaoDao dao;
+	@Mock
 	private SPCService spc;
+	@Mock
 	private EmailService emailService;
 
 	@Rule
@@ -57,13 +63,7 @@ public class LocacaoServicesTest {
 
 	@Before
 	public void setup() {
-		service = new LocacaoService();
-		dao = Mockito.mock(LocacaoDao.class);
-		service.setLocacaoDao(dao);
-		spc = Mockito.mock(SPCService.class);
-		service.setSpcService(spc);
-		emailService = Mockito.mock(EmailService.class);
-		service.setEmailService(emailService);
+		MockitoAnnotations.initMocks(this);
 	}
 
   @Test

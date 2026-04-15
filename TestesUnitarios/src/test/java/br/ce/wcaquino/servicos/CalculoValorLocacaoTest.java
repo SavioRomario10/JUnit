@@ -14,7 +14,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.DAOs.LocacaoDao;
 import br.ce.wcaquino.entidades.Filme;
@@ -25,8 +28,16 @@ import br.ce.wcaquino.exceptions.LocadoraException;
 
 @RunWith(Parameterized.class)
 public class CalculoValorLocacaoTest {
-  
+
+  @InjectMocks
   private LocacaoService service;
+  
+  @Mock
+  private SPCService spcService;
+  @Mock
+  private EmailService emailService;
+  @Mock
+  private LocacaoDao dao;
   
   @Parameter
   public List<Filme> filmes;
@@ -45,11 +56,7 @@ public class CalculoValorLocacaoTest {
 
   @Before
   public void setup(){
-    service = new LocacaoService();
-		LocacaoDao dao = Mockito.mock(LocacaoDao.class);
-		service.setLocacaoDao(dao);
-    SPCService spcService = Mockito.mock(SPCService.class);
-    service.setSpcService(spcService);
+    MockitoAnnotations.initMocks(this);
   }
 
   @Parameters(name = "{2}")
