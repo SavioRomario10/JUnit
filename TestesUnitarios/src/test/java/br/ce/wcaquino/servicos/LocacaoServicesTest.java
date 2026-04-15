@@ -13,20 +13,20 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-
+import static org.mockito.Mockito.when;
 import static br.ce.wcaquino.utils.DataUtils.*;
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilmeSemEstoque;
 
 import br.ce.wcaquino.DAOs.LocacaoDao;
-import br.ce.wcaquino.DAOs.LocacaoDaoFake;
 import br.ce.wcaquino.entidades.*;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -36,6 +36,8 @@ import br.ce.wcaquino.utils.DataUtils;
 public class LocacaoServicesTest {
 
 	private LocacaoService service;
+	private LocacaoDao dao;
+	private SPCService spc;
 
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
@@ -46,8 +48,10 @@ public class LocacaoServicesTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
-		LocacaoDao dao = new LocacaoDaoFake();
+		dao = Mockito.mock(LocacaoDao.class);
 		service.setLocacaoDao(dao);
+		spc = Mockito.mock(SPCService.class);
+		service.setSpcService(spc);
 	}
 
   @Test
@@ -119,5 +123,21 @@ public class LocacaoServicesTest {
 		//verificacao
 		boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
 		assertTrue(ehSegunda);
+	}
+
+	@Test
+	public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException{
+		//cenario
+		Usuario usuario = umUsuario().agora();
+		Usuario usuario2 = umUsuario().comNome("usuario 2").agora();
+		List<Filme> filme = Arrays.asList(umFilme().agora());
+
+		when(spc.possuiNegativacao(usuario)).thenReturn(true);
+
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("usuario possui negativacao");
+
+		//acao
+		service.alugarFilme(usuario, filme);
 	}
 }
