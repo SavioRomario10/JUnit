@@ -21,7 +21,11 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static br.ce.wcaquino.builders.LocacaoBuilder.umaLocacao;
 import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
@@ -159,11 +163,14 @@ public class LocacaoServicesTest {
 	public void deveEnviarEmailParaLocacaoAtrasada(){
 		//cenario
 		Usuario usuario1 = umUsuario().agora();
-		Usuario usuario2 = umUsuario().comNome("Usuario 2").agora();
+		Usuario usuario2 = umUsuario().comNome("Usuario 2").agora();		
+		Usuario usuario3 = umUsuario().comNome("Usuario 3").agora();
+
 
 		List<Locacao> locacoes = Arrays.asList(
 			umaLocacao().comUsuario(usuario1).atrasado().agora(),
-			umaLocacao().comUsuario(usuario2).agora()
+			umaLocacao().comUsuario(usuario2).agora(),
+			umaLocacao().comUsuario(usuario3).atrasado().agora()
 		);
 
 		when(dao.obterLocacoesPendentes()).thenReturn(locacoes);
@@ -172,8 +179,11 @@ public class LocacaoServicesTest {
 		service.notificaAtrasos();
 
 		//verificacao
-		verify(emailService).notificarAtrasos(usuario1);
-		verify(emailService, never()).notificarAtrasos(usuario1);
+		verify(emailService, atLeastOnce()).notificarAtrasos(usuario1);
+		verify(emailService, never()).notificarAtrasos(usuario2);
+		verify(emailService, atLeastOnce()).notificarAtrasos(usuario3);
+
+		verify(emailService, times(2)).notificarAtrasos(any(Usuario.class));
 
 		verifyNoMoreInteractions(emailService);
 	}
