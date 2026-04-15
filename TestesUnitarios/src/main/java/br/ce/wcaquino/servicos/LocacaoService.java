@@ -9,11 +9,14 @@ import java.util.List;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import br.ce.wcaquino.DAOs.LocacaoDao;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
 import br.ce.wcaquino.utils.DataUtils;
 
 public class LocacaoService {
+
+	private LocacaoDao dao;
 	
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filme) throws FilmeSemEstoqueException, LocadoraException{
 		
@@ -60,7 +63,12 @@ public class LocacaoService {
 		locacao.setDataRetorno(adicionarDias(dataEntrega, 1));
 		
 		//Salvando a locacao...	
-		
+		dao.salvar(locacao);
+
 		return locacao;
+	}
+
+	public void setLocacaoDao(LocacaoDao dao) {
+		this.dao = dao;
 	}
 }

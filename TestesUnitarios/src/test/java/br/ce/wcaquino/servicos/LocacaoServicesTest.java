@@ -25,6 +25,8 @@ import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilmeSemEstoque;
 
+import br.ce.wcaquino.DAOs.LocacaoDao;
+import br.ce.wcaquino.DAOs.LocacaoDaoFake;
 import br.ce.wcaquino.entidades.*;
 import br.ce.wcaquino.exceptions.FilmeSemEstoqueException;
 import br.ce.wcaquino.exceptions.LocadoraException;
@@ -44,6 +46,8 @@ public class LocacaoServicesTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
+		LocacaoDao dao = new LocacaoDaoFake();
+		service.setLocacaoDao(dao);
 	}
 
   @Test
