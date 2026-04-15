@@ -8,11 +8,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -138,7 +140,7 @@ public class LocacaoServicesTest {
 	}
 
 	@Test
-	public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException{
+	public void naoDeveAlugarFilmeParaNegativadoSPC() throws Exception{
 		//cenario
 		Usuario usuario = umUsuario().agora();
 		List<Filme> filme = Arrays.asList(umFilme().agora());
@@ -186,5 +188,39 @@ public class LocacaoServicesTest {
 		verify(emailService, times(2)).notificarAtrasos(any(Usuario.class));
 
 		verifyNoMoreInteractions(emailService);
+	}
+
+	@Test
+	public void deveTratarErroNoSPC() throws Exception{
+		//cenario
+		Usuario usuario = umUsuario().agora();
+		List<Filme> filme = Arrays.asList(umFilme().agora());
+
+		when(spc.possuiNegativacao(usuario)).thenThrow(new Exception("Falha catrastrofica"));
+
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Problema no SPC, tente novamente");
+
+		//acao
+		service.alugarFilme(usuario, filme);
+		//verificacao
+	}
+
+	@Test
+	@Ignore
+	public void deveProrrogarLocacao(){
+		//cenario
+		Locacao locacao = umaLocacao().agora();
+	
+		//acao
+		service.prorrogarLocacao(locacao, 3);
+		
+		//verificacao
+		ArgumentCaptor <Locacao> argCaptor = ArgumentCaptor.forClass(Locacao.class);
+		verify(dao).salvar(argCaptor.capture());
+		Locacao retorno = argCaptor.getValue();
+
+		assertThat(retorno.getValor(), is(12.0));
+		assertThat(retorno.getDataLocacao(), is(new Date()));
 	}
 }
